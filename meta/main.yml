@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Simon Oulevay (Alpha Hydrae)
+  description: Installs Ruby Version Manager (RVM) for a non-root user.
+  license: MIT
+  min_ansible_version: 2.0
+
+  platforms:
+    - name: Darwin
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - rvm
+    - ruby
+
+dependencies:
+  - role: AlphaHydrae.gnupg-public-key
+    gpg_key_fingerprint: 409B6B1796C275462A1703113804BB82D39DC0E3
+  - role: AlphaHydrae.multipass

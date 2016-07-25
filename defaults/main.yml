@@ -1,0 +1,5 @@
+---
+rvm_user: "{{ user }}"
+rvm_user_home: "{{ host_user_homes }}/{{ rvm_user }}"
+rvm_bin: "{{ rvm_user_home }}/.rvm/bin/rvm"
+rvm_default_ruby: false

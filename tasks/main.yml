@@ -1,0 +1,21 @@
+---
+- name: Install rvm
+  command: su - {{ rvm_user }} -c 'cd && curl -sSL https://get.rvm.io | bash -s stable' creates={{ rvm_user_home }}/.rvm
+- name: Run rvm requirements
+  command: su - {{ rvm_user }} -c '{{ rvm_bin }} requirements'
+  register: command_result
+  changed_when: "'Installing' in command_result.stdout"
+- name: Check if the default ruby version is installed
+  command: su - {{ rvm_user }} -c '{{ rvm_bin }} list|grep "{{ rvm_ruby_version }} "'
+  register: command_result
+  changed_when: command_result.rc != 0
+  failed_when: false
+  when: rvm_ruby_version is defined
+- name: Install the default ruby version
+  command: su - {{ rvm_user }} -c 'cd && {{ rvm_bin }} install {{ rvm_ruby_version }}' creates={{ rvm_user_home }}/.rvm/rubies/{{ rvm_ruby_version }}
+  when: rvm_ruby_version is defined and command_result|changed
+- name: Set the default ruby version
+  command: su - {{ rvm_user }} -c "cd && source .rvm/scripts/rvm && {{ rvm_bin }} list|grep -v '#'|grep '*'|cut -d ' ' -f 2|grep {{ rvm_ruby_version }} &>/dev/null && echo {{ rvm_ruby_version }} is already the default || {{ rvm_bin }} alias create default {{ rvm_ruby_version }}"
+  register: command_result
+  changed_when: "'already the default' not in command_result.stdout"
+  when: rvm_ruby_version is defined
